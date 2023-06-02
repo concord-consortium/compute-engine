@@ -81,6 +81,7 @@
   },
   "prettier": "@cortex-js/prettier-config",
   "dependencies": {
+    "@cortex-js/compute-engine": "^0.12.3",
     "complex.js": "^2.1.1",
     "decimal.js": "^10.4.0"
   }

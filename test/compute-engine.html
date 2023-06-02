@@ -207,34 +207,7 @@
           <h2><code>expr =</code></h2>
         </div>
         <math-field id="mf" class="mathfield" tabindex="0">
-          <!-- {\sqrt{\sum_{n=1}^\infty {\frac{10}{n^4}}}} = {\int_0^\infty \frac{2xdx}{e^x-1}} = \frac{\pi^2}{3} \in {\mathbb R} -->
 
-          <!-- \int_{10}^{100}\sin x \, d x + \int\sin x \quad \mathrm{d} x +
-          \sum_{n=1}^5 n^2+1 -->
-          <!-- 1 + 2  -->
-          <!-- 2+3.001 -->
-          <!-- -1^2 -->
-          <!-- 1^{2^3} -->
-          <!-- 1 + 2 + 3.001 -->
-          <!-- \frac{5+3i}{2} -->
-          <!-- \frac{6}{2}+\frac{3i}{2} -->
-          <!-- \frac{3+2i}{2} -->
-          <!-- 2(-i)+i  -->
-          <!-- \frac{6}{2}+\frac{3\imaginaryI}{2} -->
-
-          <!-- \frac{6 + 3\imaginaryI}{2} -->
-          <!-- 0x^2 + 4x  + 2x + 2(x-1) + b(x - 1) -->
-          <!-- -\frac{50}{70}+\operatorname{GoldenRatio} -->
-          <!-- 3 (2x + 1) + \frac{x}{2} + \frac{3x}{2} + 4\frac{x}{2} -->
-          <!-- \sqrt{1}[3] -->
-          <!-- \sin(x -->
-          <!-- x=\frac{-b\pm\sqrt{b^2-4ac}} {2a} -->
-          <!-- 2^3^4 -->
-          <!-- \sqrt{1}[3] -->
-          <!-- = should produce error or Missing = Missing -->
-          <!-- x=\frac{-b\pm \sqrt{b^2-4ac}}{2a} -->
-          <!-- (b^3c^2d)(x^7y)(a^5f)(b^2x^5b3) -->
-          <!-- {}_3^2 -->
         </math-field>
       </div>
       <!-- 2{xy}     1+|a+|2|+b| -->
@@ -293,13 +266,17 @@
 
       <!-- <div class="output-section" id="raw-form">
       <h2>Raw Form</h2>
-      <div class="output mathjson"></div>  
+      <div class="output mathjson"></div>
     </div> -->
 
       <div class="output-section" id="json-form">
-        <h2><code>expr.json</code></h2>
+        <h2>
+          <code> expr.json
+           </code>
+        </h2>
+
         <div class="row">
-          <math-field read-only class="latex"></math-field>
+          <math-field read-only class="latex"> </math-field>
           <button class="toggle">
             <svg><use xlink:href="#info-circle" /></svg>
           </button>
@@ -504,10 +481,18 @@
       });
 
       updateAssumptions();
-
+      console.log('------------------');
       const mf = document.getElementById('mf');
-      const randomExpr = ce.box(['RandomExpression']).evaluate();
-      console.log(randomExpr.json);
+      const randomExpr = ce.box(['RandomExpression']).evaluate(); // original
+      const randomExprBeforeEvaluate = ce.box(['RandomExpression']); //added
+      console.log('randomExpr', randomExpr);
+      console.log("mf.value", mf.value);
+      console.log('randomExpr.json:', randomExpr.json);
+      // console.log(ce.parse('5x + 1').json);
+
+      console.log('--------- ce.parse(*2).json -------');
+      console.log(ce.parse('*2').json);
+
       mf.value = randomExpr.latex;
       mf.onInlineShortcut = (_mf, s) => {
         const f = s.match(
@@ -579,11 +564,37 @@
 
         return '';
       };
-      mf.addEventListener('input', (ev) => updateContent(mf));
-      updateContent(mf);
+      mf.addEventListener('input', (ev) => { //called on every keyboard input
+        // console.log("updatingContent event:", ev);
+        // const keyInput = ev.data;
+        return updateContent(mf, ev);
+      });
+      updateContent(mf); //this seems like its used for page load
 
-      function updateContent(mf) {
-        const latex = mf.getValue('latex-expanded');
+      // --------------------- operand types -------------------------
+      //+
+      //-
+      //*  ev.data is 'insertText' while mf.value is /cdot
+      // / (divide) ev.data is '\\frac{#@}{#?}' while mf.value is \frac{\placeholder{}}{\placeholder{}}
+
+      //----- we want to add placeholder to left and right if there is nothing
+
+      function updateContent(mf, ev) {
+        console.log("line 588 \n mf.value", mf.value);
+        console.log('event:', ev);
+
+        let latex = mf.getValue('latex-expanded'); //mf.value same as latex?
+        console.log("latex:", latex);
+
+        // if (ev){
+        //   if (ev.data === '+' && mf.value === '+'){
+        //     console.log("empty put two placeholders left and right!");
+        //     // latex += '\\placeholder{}';
+        //     mf.value = '\\placeholder{}' + mf.value + '\\placeholder{}';
+        //     console.log("latex changed to:", latex);
+        //   }
+        // }
+
         let expr;
         try {
           const latexEl = document.getElementById('latex');
@@ -742,6 +753,7 @@
       }
 
       function updateExpr(expr, id) {
+        console.log("updateExpr with expr", expr, "id:", id);
         const el = document.getElementById(id);
         if (!el) return;
 
@@ -847,6 +859,7 @@
       }
 
       function exprToString(expr) {
+        console.log("exprToString with expr", expr);
         if (!expr) return '';
         return escapeHtml(exprToStringRecursive(expr.json, 0));
       }

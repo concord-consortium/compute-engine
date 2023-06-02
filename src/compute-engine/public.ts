@@ -39,14 +39,14 @@ export type Metadata = {
 
 /**
  * The numeric evaluation mode:
- * 
+ *
 <div class=symbols-table>
 
 | Mode | |
 | :--- | :----- |
 | `"auto"`| Use bignum or complex numbers. |
 | `"machine"` |  **IEEE 754-2008**, 64-bit floating point numbers: 52-bit mantissa, about 15 digits of precision |
-| `"bignum"` | Arbitrary precision floating point numbers, as provided by the "decimal.js" library | 
+| `"bignum"` | Arbitrary precision floating point numbers, as provided by the "decimal.js" library |
 | `"complex"` | Complex number represented by two machine numbers, a real and an imaginary part, as provided by the "complex.js" library |
 
 </div>
@@ -1853,7 +1853,7 @@ export type SymbolAttributes = {
   * - `GoldenRatio` has `holdUntil: 'simplify'` (symbolic constant)
   * - `x` has `holdUntil: 'evaluate'` (variables)
   * - `Pi` has `holdUntil: 'N'` (special numeric constant)
-  * 
+  *
   * **Default:** `simplify`
   */
   holdUntil: 'never' | 'simplify' | 'evaluate' | 'N';
