@@ -421,10 +421,9 @@
 
     <script defer type="module">
       import { convertLatexToMarkup } from 'https://unpkg.com/mathlive/dist/mathlive.min.mjs';
-      import { ComputeEngine } from '../dist/compute-engine.esm.js';
+      import { ComputeEngine } from 'https://unpkg.com/@cortex-js/compute-engine@latest/dist/compute-engine.min.esm.js';
 
       const MAX_LINE_LENGTH = 64;
-
       //
       // Numeric format segmented control
       //
@@ -481,17 +480,13 @@
       });
 
       updateAssumptions();
-      console.log('------------------');
+      // console.log('------------------');
       const mf = document.getElementById('mf');
       const randomExpr = ce.box(['RandomExpression']).evaluate(); // original
       const randomExprBeforeEvaluate = ce.box(['RandomExpression']); //added
-      console.log('randomExpr', randomExpr);
-      console.log("mf.value", mf.value);
-      console.log('randomExpr.json:', randomExpr.json);
-      // console.log(ce.parse('5x + 1').json);
-
-      console.log('--------- ce.parse(*2).json -------');
-      console.log(ce.parse('*2').json);
+      // console.log('randomExpr', randomExpr);
+      // console.log("mf.value", mf.value);
+      // console.log('randomExpr.json:', randomExpr.json);
 
       mf.value = randomExpr.latex;
       mf.onInlineShortcut = (_mf, s) => {
@@ -565,8 +560,6 @@
         return '';
       };
       mf.addEventListener('input', (ev) => { //called on every keyboard input
-        // console.log("updatingContent event:", ev);
-        // const keyInput = ev.data;
         return updateContent(mf, ev);
       });
       updateContent(mf); //this seems like its used for page load
@@ -582,19 +575,7 @@
       function updateContent(mf, ev) {
         console.log("line 588 \n mf.value", mf.value);
         console.log('event:', ev);
-
         let latex = mf.getValue('latex-expanded'); //mf.value same as latex?
-        console.log("latex:", latex);
-
-        // if (ev){
-        //   if (ev.data === '+' && mf.value === '+'){
-        //     console.log("empty put two placeholders left and right!");
-        //     // latex += '\\placeholder{}';
-        //     mf.value = '\\placeholder{}' + mf.value + '\\placeholder{}';
-        //     console.log("latex changed to:", latex);
-        //   }
-        // }
-
         let expr;
         try {
           const latexEl = document.getElementById('latex');
@@ -607,6 +588,9 @@
           }
 
           errors = [];
+
+          ce.latexOptions = { preserveLatex: true };
+          console.log("latexSyntax.parse = ", ce.latexSyntax.parse(latex));
 
           expr = ce.parse(latex);
         } catch (e) {
@@ -753,7 +737,13 @@
       }
 
       function updateExpr(expr, id) {
-        console.log("updateExpr with expr", expr, "id:", id);
+        // console.log("\nexpr", expr, "\nid:", id);
+
+        if (id === 'json-form'){
+          console.log("----------updateExpr------");
+          console.log("\nexpr", expr, "\nid:", id);
+        }
+
         const el = document.getElementById(id);
         if (!el) return;
 
@@ -770,8 +760,77 @@
         }
         const latexEl = el.querySelector('.latex');
         if (latexEl && expr) {
-          latexEl.value = expr.latex;
+
+          // if (id === 'json-form'){
+          //   console.log("expr.json:", expr.json);
+          //   console.log("\n\n\n");
+
+          //   if (expr.json){
+          //     for (let [index, val] of expr.json.entries()){
+          //       console.log("---for loop ----");
+
+          //       console.log("index:", index);
+          //       console.log("val:", val);
+
+          //       // //** TO DO
+          //       // // check excalidraw document- replace any error missing with /placeholder?
+          //       // console.log("element:", element);
+          //       // console.log("is element an array ?:", Array.isArray(element));
+
+          //       // console.log("element length:", element.length);
+
+          //       if (Array.isArray(val) && val.length === 3){
+
+
+          //         if (val[0] === "Error" && val[1] === "'missing'"){
+          //           console.log("*** matches an error where index:", index);
+          //           console.log("before assignment: ", expr.json[index]);
+          //           // val = "plac";
+          //           expr.json[index] = "plac"; //why is this not assigning it?
+          //           console.log("after assignment: ", expr.json[index]);
+          //           console.log("expr.latex", expr.latex);
+
+          //         }
+          //       }
+          //     }
+          //     console.log("------end for loop--------");
+          //     console.log("expr.json turned to:", expr.json);
+          //   }
+          // }
+
+
+          //search for latex
+
+          //1 - brute force - find "Multiply" in mathjson, add that into the latex
+          //2 - look at initial latex, if you see a cdot, put a cdot in output json
+          //
+
+          if (id === 'json-form'){
+            console.log("expr.latex:\n", expr.latex)
+            console.log("---replace----")
+            //replace all black squares
+            //replace all nothings
+            //if multiply- add cdot in middle
+            let newLatex = expr.latex.replaceAll("\\error{\\blacksquare}", "\\placeholder{}");
+            newLatex = newLatex.replaceAll("\\mathrm{Nothing}", "\\placeholder{}");
+            if (expr.json[0] === "Multiply"){
+              console.log("found multiply!!!");
+            }
+            console.log("newLAtex:", newLatex);
+            latexEl.value = newLatex;
+            mf.value = newLatex; //set correct value to Mathfield
+
+          }
+          else {
+            latexEl.value = expr.latex;
+          }
+
+
+
+
+
         }
+
 
         errors = [];
       }
@@ -859,7 +918,7 @@
       }
 
       function exprToString(expr) {
-        console.log("exprToString with expr", expr);
+        // console.log("exprToString with expr", expr);
         if (!expr) return '';
         return escapeHtml(exprToStringRecursive(expr.json, 0));
       }
@@ -868,7 +927,6 @@
         ce.assume('n', 'Integer');
         ce.assume('six', 6);
         // ce.assume('y', 5);
-
         // ce.assume(['Greater', 'x', 4]);
         // ce.assume(['Equal', 'a', 1]);
 
