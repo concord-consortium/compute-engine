@@ -90,7 +90,7 @@ export type Attributes = {
  */
 export type MathJsonNumber = {
   num: 'NaN' | '-Infinity' | '+Infinity' | string;
-  cursorPosition: number;
+  cursorPosition?: number;
 } & Attributes;
 
 export type MathJsonSymbol = {

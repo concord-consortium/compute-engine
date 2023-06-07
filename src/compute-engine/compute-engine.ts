@@ -1391,19 +1391,19 @@ export class ComputeEngine implements IComputeEngine {
 
   parse(
     latex: LatexString | string,
-    options?: { canonical?: boolean; cursorPosition: number }
+    options?: { canonical?: boolean; cursorPosition?: number }
   ): BoxedExpression;
   parse(
     s: null,
-    options?: { canonical?: boolean; cursorPosition: number }
+    options?: { canonical?: boolean; cursorPosition?: number }
   ): null;
   parse(
     latex: LatexString | string | null,
-    options?: { canonical?: boolean; cursorPosition: number }
+    options?: { canonical?: boolean; cursorPosition?: number }
   ): null | BoxedExpression;
   parse(
     latex: LatexString | null | string,
-    options?: { canonical?: boolean; cursorPosition: number }
+    options?: { canonical?: boolean; cursorPosition?: number }
   ): BoxedExpression | null {
     if (typeof latex !== 'string') return null;
     console.log('-------📁compute-engine.ts-------');
@@ -1547,7 +1547,7 @@ export class ComputeEngine implements IComputeEngine {
     try {
       const latex = latexString(arg1);
       const predicate = latex
-        ? this.parse(latex, { canonical: false })
+        ? this.parse(latex, { canonical: false})
         : this.box(arg1, { canonical: false });
 
       if (!arg2) return assume(predicate);
