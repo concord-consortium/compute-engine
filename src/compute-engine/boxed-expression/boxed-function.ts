@@ -209,6 +209,8 @@ export class BoxedFunction extends AbstractBoxedExpression {
   }
 
   get ops(): BoxedExpression[] {
+    // console.log('boxed-function.ts > 🔨ops()');
+    // console.log('this._ops:', this._ops);
     return this._ops;
   }
 
@@ -217,12 +219,25 @@ export class BoxedFunction extends AbstractBoxedExpression {
   }
 
   get op1(): BoxedExpression {
-    return this._ops[0] ?? this.engine.symbol('Nothing');
+    // console.log('--------------------');
+    // console.log('boxed-function.ts > op1');
+    // console.log('this._ops[0]:', this._ops[0]);
+    // console.log('this.engine.symbol(nothing):', this.engine.symbol('Nothing'));
+    // console.log('returning:', this._ops[0] ?? this.engine.symbol('Nothing'));
+
+    return this._ops[0] ?? this.engine.symbol('Nothing'); //if left side null or undefined, right is returned
   }
   get op2(): BoxedExpression {
-    return this._ops[1] ?? this.engine.symbol('Nothing');
+    // console.log('--------------------');
+    // console.log('boxed-function.ts > op2');
+    // console.log('this._ops[1]:', this._ops[1]);
+    // console.log('this.engine.symbol(nothing):', this.engine.symbol('Nothing'));
+    // console.log('returning:', this._ops[1] ?? this.engine.symbol('Nothing'));
+    // return this._ops[1] ?? this.engine.symbol('\\placeholder'); //added
+    return this._ops[1] ?? this.engine.symbol('Nothing'); //original
   }
   get op3(): BoxedExpression {
+    // console.log('boxed-function.ts > op3');
     return this._ops[2] ?? this.engine.symbol('Nothing');
   }
 

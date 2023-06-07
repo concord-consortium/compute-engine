@@ -1,0 +1,119 @@
+//latex = mf.value
+//latex gets sent to ce.parse -> BoxedExpression
+//expr = ce.parse(latex);
+//read only 2nd mathfield shows expr.latex
+//gray field below shows expr.json (Math json representation)
+
+//--------------
+//3 expr = ce.parse(latex);
+   // latex -> ce.parse -> latexsyntax.parse -> returns type Expression back to ce.parse.
+   //ce.parse boxes it (this.box)-> BoxedExpression
+   //{preserveLatex: true} affects latexsyntax.parse, adding latex field to the MathJson
+   // all boxed expressions will have _latex field,if they don't then this.engine.serialize(this) is returned
+
+
+  //5  ce.jsonSerializationOptions = { metadata: ['latex'] }; //expr -> MathJSON, stores metadata
+  // applies to gray field, will added a "latex" field to the MAthJSON which is created from the boxed expression.
+  // boxed expression has a head name, and arguments for childrens (which can be other BoxedExpressions).
+  // {metadata:["latex"]} will add latex of all children
+
+
+  //Next steps---------
+  //latex-syntax parse, add "source positions" to all arguments/elements of the MathJSon that is created,
+  // creates the following MathJSON
+
+  // write a function that either takes MathJSON or BoxedExpression -> latex: which gets assigend to mf.value
+  // this latex by using source positions, find sourcePosition of missing character
+  // method 1 - start at full latex at bottom, we'd see at first child of function (4-), and delete characters 6-8, then
+  // insert a recursive call
+
+  //another method - look at 4, return latex,
+  //example (4-)
+  // expected JSON
+  // {
+  //   "fn": [
+  //     "Delimiter",
+  //     {
+  //       "fn": [
+  //         "Subtract",
+  //         {
+  //           "num": "4",
+  //           "latex": "4"
+  //           "sourcePositions": [6,7] (in the latex) //added
+  //         },
+  //         {
+  //           "fn": [
+  //             "Error",
+  //             "'missing'"
+  //           ],
+  //           "latex": "\\error{\\placeholder}"
+  //         }
+  //       ],
+  //       "latex": "4-"
+  //       "sourcePositions": [6,8] //added
+  //     }
+  //   ],
+  //   "latex": "\\left(4-\\right)"
+  //   "sourcePositions":[0, 15]
+  // }
+
+  //expected DOM render (4-☐)
+
+  //*consider the carrot/cursor position bug
+
+
+  {
+   // @ts-ignore
+   "fn": [
+     "Delimiter",
+     {
+       "fn": [
+         "Subtract",
+         {
+           "num": "4",
+           "latex": "4"
+         },
+         {
+           "fn": [
+             "Error",
+             "'missing'"
+           ],
+           "latex": "\\error{\\placeholder}"
+         }
+       ],
+       "latex": "4-\\error{\\placeholder}" //only difference when enable
+                                                   //  ce.latexOptions = { preserveLatex: true, addSourcePositions: true };
+
+     }
+   ],
+   "latex": "(4-\\error{\\placeholder})"
+ }
+
+
+ {
+   // @ts-ignore
+   "fn": [
+     "Delimiter",
+     {
+       "fn": [
+         "Subtract",
+         {
+           "num": "4",
+           "latex": "4"
+         },
+         {
+           "fn": [
+             "Error",
+             "'missing'"
+           ],
+           "latex": "\\error{\\placeholder}"
+         }
+       ],
+       "latex": "4-"
+     }
+   ],
+   "latex": "\\left(4-\\right)"
+ }
+
+
+

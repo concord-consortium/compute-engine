@@ -469,7 +469,6 @@ export function box(
       return new BoxedString(ce, expr.slice(1, -1));
 
     if (/^[+-]?[0-9]/.test(expr)) return ce.number(expr);
-
     return ce.symbol(expr, options);
   }
 
@@ -484,8 +483,12 @@ export function box(
     if ('dict' in expr)
       return new BoxedDictionary(ce, expr.dict, { canonical: true, metadata });
     if ('fn' in expr) {
-      if (typeof expr.fn[0] === 'string')
-        return boxFunction(ce, expr.fn[0], expr.fn.slice(1), options);
+      if (typeof expr.fn[0] === 'string') {
+        return boxFunction(ce, expr.fn[0], expr.fn.slice(1), {
+          metadata,
+          ...options,
+        });
+      }
       return new BoxedFunction(
         ce,
         box(ce, expr.fn[0], options),

@@ -154,8 +154,8 @@ export const DEFAULT_PARSE_LATEX_OPTIONS: ParseLatexOptions = {
     if (/^[a-zA-Z]/.test(s)) return 'symbol';
     return 'unknown';
   },
-
   preserveLatex: false,
+  addSourcePositions: false,
 };
 
 export class _Parser implements Parser {
@@ -398,6 +398,10 @@ export class _Parser implements Parser {
   peekDefinitions(
     kind: 'function' | 'symbol' | 'infix' | 'prefix' | 'postfix' | 'operator'
   ): [FunctionEntry | IndexedLatexDictionaryEntry, number][] | null {
+    // console.log(
+    //   '📁 parse.ts > \n\t 🔨 peekDefinitions[line401] >  🍔 kind:',
+    //   kind
+    // );
     let defs: (undefined | IndexedLatexDictionaryEntry[])[];
     if (kind === 'function') {
       const start = this.index;
@@ -406,6 +410,7 @@ export class _Parser implements Parser {
         this.match('\\mathrm') ||
         this.match('\\mathit')
       ) {
+        console.log('----------📁 parse.ts---------');
         const fn = this.matchStringArgument();
         const n = this.index - start;
         this.index = start;
@@ -1232,6 +1237,7 @@ export class _Parser implements Parser {
       this.match('\\mathit') ||
       this.match('\\mathrm')
     ) {
+      // console.log('📁 parse.ts > \n\t 🔨 matchIdentifier  >  matches mathrm'); //does not hit this line for fraction
       const start = this.index;
       const id = this.matchStringArgument();
       if (id === null) return this.error('expected-string-argument', start);
@@ -1256,6 +1262,8 @@ export class _Parser implements Parser {
    */
 
   matchFunction(): Expression | null {
+    // console.log('📁 parse.ts > \n\t 🔨 matchFunction ');
+
     const start = this.index;
     //
     // Is there a definition for this as a function?
@@ -2074,19 +2082,28 @@ export class _Parser implements Parser {
   /**
    * Add LaTeX or other requested metadata to the expression
    */
+
+  decorate(expr: Expression, start: number): Expression;
+  decorate(expr: Expression | null, start: number): Expression | null;
   decorate(expr: Expression | null, start: number): Expression | null {
     if (expr === null) return null;
     if (!this.options.preserveLatex) return expr;
 
     const latex = this.latex(start, this.index);
+    const latexBeforeLength = this.latex(0, start).length;
+    const sourceOffsets: [number, number] = [
+      latexBeforeLength,
+      this.latexBefore + latex.length,
+    ]
     if (Array.isArray(expr)) {
-      expr = { latex, fn: expr };
+      expr = { latex, sourceOffsets, fn: expr };
     } else if (typeof expr === 'number') {
-      expr = { latex, num: Number(expr).toString() };
+      expr = { latex, sourceOffsets, num: Number(expr).toString() };
     } else if (typeof expr === 'string') {
-      expr = { latex, sym: expr };
+      expr = { latex, sourceOffsets, sym: expr };
     } else if (typeof expr === 'object' && expr !== null) {
       expr.latex = latex;
+      expr.sourceOffsets = sourceOffsets;
     }
     return expr;
   }

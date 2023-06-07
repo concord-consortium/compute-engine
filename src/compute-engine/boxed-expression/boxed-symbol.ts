@@ -190,6 +190,7 @@ export class BoxedSymbol extends AbstractBoxedExpression {
   }
 
   get isNothing(): boolean {
+    // console.log('boxed-symbol.ts > isNothing()');
     return this._name === 'Nothing';
   }
 

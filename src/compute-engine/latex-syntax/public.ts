@@ -450,6 +450,14 @@ export type ParseLatexOptions = {
    * **Default:** `false`
    */
   preserveLatex: boolean;
+  /**
+   * If true, each element of the expression will have a key 'sourcePosition', value: [start, end]
+   * which denotes in the final latex where the element begins and ends. This is used to correctly
+   * render placeholders
+   *
+   * **Default:** `false`
+   */
+  addSourcePositions: boolean;
 };
 
 export type SerializeLatexOptions = {

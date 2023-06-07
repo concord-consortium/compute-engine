@@ -174,14 +174,18 @@ export abstract class AbstractBoxedExpression implements BoxedExpression {
   }
 
   get op1(): BoxedExpression {
+    console.log('abstract-boxed-expression.ts > op1');
     return this.engine.symbol('Nothing');
   }
 
   get op2(): BoxedExpression {
+    console.log('abstract-boxed-expression.ts > op2');
+
     return this.engine.symbol('Nothing');
   }
 
   get op3(): BoxedExpression {
+    console.log('abstract-boxed-expression.ts > op2');
     return this.engine.symbol('Nothing');
   }
 

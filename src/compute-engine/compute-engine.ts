@@ -191,7 +191,7 @@ export class ComputeEngine implements IComputeEngine {
     Maybe: null,
 
     All: null,
-    Nothing: null,
+    Nothing: null, //changing this to PlaceHolder does nothing
     None: null,
     Undefined: null,
     Function: null,
@@ -1391,20 +1391,29 @@ export class ComputeEngine implements IComputeEngine {
 
   parse(
     latex: LatexString | string,
-    options?: { canonical?: boolean }
+    options?: { canonical?: boolean; cursorPosition: number }
   ): BoxedExpression;
-  parse(s: null, options?: { canonical?: boolean }): null;
+  parse(
+    s: null,
+    options?: { canonical?: boolean; cursorPosition: number }
+  ): null;
   parse(
     latex: LatexString | string | null,
-    options?: { canonical?: boolean }
+    options?: { canonical?: boolean; cursorPosition: number }
   ): null | BoxedExpression;
   parse(
     latex: LatexString | null | string,
-    options?: { canonical?: boolean }
+    options?: { canonical?: boolean; cursorPosition: number }
   ): BoxedExpression | null {
     if (typeof latex !== 'string') return null;
+    console.log('-------📁compute-engine.ts-------');
+    console.log('\toptions:', options);
+
+    console.log('\tcompute-engine.ts [1406]> options:', options);
+    console.log('\tcursorPosition:', options?.cursorPosition);
+    const cursorPosition = options?.cursorPosition || 0;
     return this.box(
-      this.latexSyntax.parse(latexString(latex) ?? latex),
+      this.latexSyntax.parse(latexString(latex) ?? latex, cursorPosition),
       options
     );
   }
