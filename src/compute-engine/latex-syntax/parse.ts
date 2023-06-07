@@ -2083,18 +2083,18 @@ export class _Parser implements Parser {
    * Add LaTeX or other requested metadata to the expression
    */
 
-  decorate(expr: Expression, start: number): Expression;
-  decorate(expr: Expression | null, start: number): Expression | null;
   decorate(expr: Expression | null, start: number): Expression | null {
     if (expr === null) return null;
     if (!this.options.preserveLatex) return expr;
 
     const latex = this.latex(start, this.index);
+    // start and this.index are indexes in the tokens array
+    // for sourceOffsets we want indexes in the source latex
     const latexBeforeLength = this.latex(0, start).length;
     const sourceOffsets: [number, number] = [
       latexBeforeLength,
-      this.latexBefore + latex.length,
-    ]
+      latexBeforeLength + latex.length,
+    ];
     if (Array.isArray(expr)) {
       expr = { latex, sourceOffsets, fn: expr };
     } else if (typeof expr === 'number') {
