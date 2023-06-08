@@ -490,9 +490,9 @@
       updateAssumptions();
       // console.log('------------------');
       const mf = document.getElementById('mf');
-      // const randomExpr = ce.box(['RandomExpression']).evaluate(); // original
-      // const randomExprBeforeEvaluate = ce.box(['RandomExpression']); //added
-      // mf.value = randomExpr.latex;
+      const randomExpr = ce.box(['RandomExpression']).evaluate(); // original
+      const randomExprBeforeEvaluate = ce.box(['RandomExpression']); //added
+      mf.value = randomExpr.latex;
       mf.onInlineShortcut = (_mf, s) => {
         const f = s.match(
           /^(cos|sin|tan|arcsin|arccos|arctan|arctg|arcctg|arcsec|arccsc|arsinh|arcosh|artanh|arcsech|arccsch|arg|ch|cosec|cosh|cot|cotg|coth|csc|ctg|cth|log|ln|lg|lb|sec|sinh|sh|tanh|tg|th)(.*)/
@@ -779,7 +779,7 @@
             console.log("expr.latex:\n", expr.latex)
             console.log("---replace----")
             let newLatex = expr.latex;
-            // newLatex = expr.latex.replaceAll("\\error{\\blacksquare}", "\\placeholder{}");
+            newLatex = expr.latex.replaceAll("\\error{\\blacksquare}", "\\placeholder{}");
             // newLatex = newLatex.replaceAll("\\mathrm{Nothing}", "\\placeholder{}");
             if (expr.json[0] === "Multiply"){
               console.log("found multiply!!!");

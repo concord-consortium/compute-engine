@@ -1,5 +1,6 @@
 const { stringify } = require('querystring');
 
+//example is when you type (1/)
 something = {
   latex: '\\left(\\frac{1}{}\\right)',
   sourceOffsets: [0, 23],

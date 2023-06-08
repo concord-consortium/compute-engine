@@ -40,8 +40,8 @@ export const DEFAULT_SERIALIZE_LATEX_OPTIONS: Required<SerializeLatexOptions> =
 
     multiply: '\\times',
 
-    // missingSymbol: '\\blacksquare',
-    missingSymbol: '\\placeholder',
+    missingSymbol: '\\blacksquare',
+    // missingSymbol: '\\placeholder',
 
     // openGroup: '(',
     // closeGroup: ')',
@@ -133,10 +133,10 @@ export class LatexSyntax {
   }
 
   parse(latex: LatexString, cursorPosition: number): Expression {
-    console.log('-----------📁 latex-syntax.ts-------------');
-    console.log('\t🔨parse > 🍔 latex:', latex);
-    console.log('\t options:', this.options);
-    console.log('\t 🍔 cursorPosition:', cursorPosition);
+    // console.log('-----------📁 latex-syntax.ts-------------');
+    // console.log('\t🔨parse > 🍔 latex:', latex);
+    // console.log('\t options:', this.options);
+    // console.log('\t 🍔 cursorPosition:', cursorPosition);
     const parser = new _Parser(
       tokenize(latex, []),
       this.options,
@@ -145,7 +145,7 @@ export class LatexSyntax {
     );
 
     let expr = parser.matchExpression();
-    console.log('\texpr:', expr);
+    // console.log('\texpr:', expr);
     if (!parser.atEnd) {
       console.log('something went wrong:');
       // Somethin went wrong, generate error expressin
@@ -160,14 +160,14 @@ export class LatexSyntax {
           expr ?? parser.error('missing', start)
         );
         if (result) {
-          console.log(
-            '📁 latex-syntax.ts > \n\t🔨parse > returns result:',
-            result
-          );
+          // console.log(
+          //   '📁 latex-syntax.ts > \n\t🔨parse > returns result:',
+          //   result
+          // );
           return result;
         }
         if (def.name) {
-          console.log('📁 latex-syntax.ts > def.name >');
+          // console.log('📁 latex-syntax.ts > def.name >');
           return [
             def.name,
             expr ?? parser.error('missing', start),
@@ -211,35 +211,35 @@ export class LatexSyntax {
         rest
       );
       expr = expr ? ['Sequence', expr, error] : error;
-      console.log('expr [line 211]:', expr);
+      // console.log('expr [line 211]:', expr);
     }
 
     expr ??= ['Sequence'];
 
     if (this.options.preserveLatex) {
-      console.log('\tpreserve Latex with expr:', expr); //we enter here because of {preserveLatex: true in compute-engine.html}
+      // console.log('\tpreserve Latex with expr:', expr); //we enter here because of {preserveLatex: true in compute-engine.html}
       if (Array.isArray(expr)) {
-        console.log('\tline 219');
+        // console.log('\tline 219');
         expr = {
           latex,
           fn: expr,
         };
       } else if (typeof expr === 'number') {
-        console.log('\tline 222');
+        // console.log('\tline 222');
         expr = {
           latex,
           num: Number(expr).toString(),
           cursorPosition,
         };
       } else if (typeof expr === 'string') {
-        console.log('\tline 225');
+        // console.log('\tline 225');
         expr = {
           latex,
           sym: expr,
         };
       } else if (typeof expr === 'object' && expr !== null) {
-        console.log('\tline 228');
-        console.log('\tlatex being stored into expr.latex:', latex);
+        // console.log('\tline 228');
+        // console.log('\tlatex being stored into expr.latex:', latex);
         expr.latex = latex;
       }
     }
@@ -247,9 +247,9 @@ export class LatexSyntax {
 
     // console.log('source positions are....', this.options.addSourcePositions);
     if (this.options.addSourcePositions) {
-      console.log('\taddSourcePositions!');
+      // console.log('\taddSourcePositions!');
     }
-    console.log('\texpr that is returned', expr);
+    // console.log('\texpr that is returned', expr);
     return expr ?? ['Sequence'];
   }
   serialize(expr: Expression): LatexString {
