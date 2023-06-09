@@ -351,15 +351,17 @@
 
       // expr = ce.parse(latex);
       const latexSyntax = ce.latexSyntax;
-      const result = latexSyntax.parse(latex);
+      const result = latexSyntax.parse(latex); //result is mathJSON obj
       console.log('🔨updateContent');
       console.log('\tlatex:', latex);
       console.log('\tresult:', result);
+      const newLatex = generateNewLatexFromMathJSONObj(result, latex);
 
-      const missingElements = findMissingElements(result);
-      const newLatex = replaceMissingElements(latex, missingElements);
-      console.log('newLatex', newLatex);
 
+      // const missingElements = findMissingElements(result); //scott
+      // const newLatex = replaceMissingElements(latex, missingElements); //scott
+      // console.log('**** newLatex', newLatex);
+      mf.value = newLatex;
       updateExpr(null, 'json-form');
       updateExpr(null, 'canonical-form');
 
@@ -369,7 +371,6 @@
         // console.log('updateContent expr', nonCanonical);
         const placeholderExpr = ce.parse(newLatex, { canonical: false });
         updateExpr(placeholderExpr, 'json-form');
-        console.log('updateContent expr', placeholderExpr);
       } catch (e) {
         console.error(
           'format(%c ' + latex + "%c, ['json']) " + e.toString(),
@@ -391,6 +392,39 @@
         }
       } catch (e) { }
     }
+    function generateNewLatexFromMathJSONObj(objToAnalyze, newLatex) {
+      console.log('🔨generateNewLatexFromMathJSONObj-------');
+      console.log('\tw/ objToAnalyze:', objToAnalyze);
+      console.log('\tw/ newLatex:', newLatex);
+      if (Array.isArray(objToAnalyze)) {
+        console.log('\tisArray');
+        for (let i = 0; i < objToAnalyze.length; i++) {
+          const element = objToAnalyze[i];
+          if (typeof element === 'object') {
+            if (
+              element.fn
+              && element.fn[0] === 'Error'
+              && element.sourceOffsets
+              && element.sourceOffsets[0] === element.sourceOffsets[1]
+            ) {
+              const position = element.sourceOffsets[0];
+              newLatex = newLatex.slice(0, position) + '\\placeholder{}' + newLatex.slice(position);
+            } else {
+              newLatex = generateNewLatexFromMathJSONObj(element, newLatex);
+            }
+          }
+        }
+      } else if (typeof objToAnalyze === 'object') {
+        console.log("\tisObject");
+        for (const key in objToAnalyze) {
+          if (typeof objToAnalyze[key] === 'object') {
+            newLatex = generateNewLatexFromMathJSONObj(objToAnalyze[key], newLatex);
+          }
+        }
+      }
+      return newLatex;
+    }
+
 
     function updateLatex(latex, id) {
       const el = document.getElementById(id);
@@ -530,8 +564,8 @@
 
     function replaceMissingElements(latex, missingElements) {
       console.log("🔨replaceMissingElements:");
-      console.log("latex:", latex);
-      console.log("missingElements:", missingElements);
+      console.log("\tlatex:", latex);
+      console.log("\tmissingElements:", missingElements);
       const missingIndexes = [];
       for (const item of missingElements) {
         if (item?.sourceOffsets?.length == 2 &&
