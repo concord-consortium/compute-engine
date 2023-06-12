@@ -1,5 +1,5 @@
 {
-  "version": "0.12.3",
+  "version": "0.12.3-cc.1",
   "scripts": {
     "build": "bash ./scripts/build.sh",
     "clean": "bash ./scripts/clean.sh",
@@ -12,7 +12,7 @@
     "version": "bash ./scripts/version.sh",
     "test": "bash ./scripts/test.sh"
   },
-  "name": "@cortex-js/compute-engine",
+  "name": "@concord-consortium/compute-engine",
   "description": "Symbolic computing and numeric evaluations for JavaScript and Node.js",
   "homepage": "https://cortexjs.io/compute-engine/",
   "repository": {

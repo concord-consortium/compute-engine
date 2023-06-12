@@ -48,7 +48,7 @@ function preamble(moduleName) {
 const TERSER_OPTIONS = {
   ecma: 2020, // Use "5" to support older browsers
   compress: {
-    drop_console: true,
+    // drop_console: true,
     drop_debugger: true,
     global_defs: {
       ENV: JSON.stringify(process.env.BUILD),
