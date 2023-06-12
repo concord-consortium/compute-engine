@@ -321,6 +321,7 @@ export class ComputeEngine implements IComputeEngine {
     tolerance?: number;
     defaultDomain?: string;
   }) {
+    console.log("Concord's Compute Engine");
     if (options !== undefined && typeof options !== 'object')
       throw Error('Unexpected argument');
 
@@ -1087,9 +1088,9 @@ export class ComputeEngine implements IComputeEngine {
       typeof message === 'string'
         ? this.string(message)
         : new BoxedFunction(this, 'ErrorCode', [
-            this.string(message[0]),
-            ...message.slice(1).map((x) => this.box(x, { canonical: false })),
-          ]);
+          this.string(message[0]),
+          ...message.slice(1).map((x) => this.box(x, { canonical: false })),
+        ]);
 
     if (!where)
       return new BoxedFunction(this, 'Error', [msg], { canonical: false });
