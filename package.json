@@ -17,9 +17,9 @@
   "homepage": "https://cortexjs.io/compute-engine/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cortex-js/compute-engine.git"
+    "url": "https://github.com/concord-consoritum/compute-engine.git"
   },
-  "bugs": "https://github.com/cortex-js/compute-engine/issues/",
+  "bugs": "https://github.com/concord-consoritum/compute-engine/issues/",
   "publishConfig": {
     "access": "public"
   },
