@@ -223,7 +223,6 @@
     ---------------------- Replaced Expression (Read Only)-------------------------
     <br />
     <br />
-
     <div class="output-section" id="json-form">
       <h2><code>placeholderExpr (json-form)</code></h2>
       <div class="row">
@@ -238,27 +237,30 @@
     </div>
 
 
+    <h2><code>latex-edited</code></h2>
+
     <div class="row">
       <div class="output" id="latex-edited"></div>
     </div>
 
 
-
-
-
     ------------------------------Reassigned Input -----------------------------------
-    <br> Raw input gets reassigned to input field
+    <br><br>
+    <h2><code>Raw input that gets reassigned back to input field</code></h2>
     <div class="row">
       <div id="input-label">
       </div>
       <math-field id="newmf" class="mathfield" tabindex="0">
       </math-field>
     </div>
+    <h2><code>Latex Reassigned </code></h2>
     <div class="row">
       <div class="output" id="latex-reassigned"></div>
     </div>
   </main>
 
+
+  <!-- -------------------------------------- SCRIPT  -------------------------------------------- -->
   <script defer type="module">
     import { convertLatexToMarkup } from 'https://unpkg.com/mathlive/dist/mathlive.min.mjs';
     import { ComputeEngine } from '../dist/compute-engine.esm.js';
@@ -287,15 +289,10 @@
         );
       }
       errors = [];
-      // expr = ce.parse(latex);
       const latexSyntax = ce.latexSyntax;
       const result = latexSyntax.parse(latex);
-      // console.log('🔨updateContent');
-      // console.log('\tlatex:', latex);
-      // console.log('\tresult:', result);
       const missingElements = findMissingElements(result);
       const newLatex = replaceMissingElements(latex, missingElements);
-      // updateExpr(null, 'json-form'); //do we need this?
 
       try {
         const placeholderExpr = ce.parse(newLatex, { canonical: false });
@@ -328,67 +325,28 @@
     //this is the one that's updated
     const newmf = document.getElementById('newmf');
     newmf.addEventListener('input', (ev) => {
-      // console.log('\n⚡event:', ev);
       return updateContentWrite(newmf)
     });
     updateContentWrite(newmf);
 
-    // **** Test case #1 - when you put mf.value = newLatex
-    // place a fraction ‘(‘                     ()
-    //  then place a 4 in the middle           (4)
-    // delete right parathesis				         (4
-    //  then you can’t delete 4
-
     function updateContentWrite(mf) {
       const latex = mf.getValue('latex');
-      // const latex = mf.getValue('latex-unstyled');
       let expr;
       const latexElReassigned = document.getElementById('latex-reassigned');
-      if (latexElReassigned) latexElReassigned.innerHTML = escapeHtml(latex);
+      if (latexElReassigned) latexElReassigned.innerHTML = escapeHtml(latex); //assigns to latex reassigned bubble
       if (document.getElementById('asciimath')) {
         document.getElementById('asciimath').innerHTML = escapeHtml(
           mf.getValue('ascii-math')
         );
       }
       errors = [];
-      // expr = ce.parse(latex);
       const latexSyntax = ce.latexSyntax;
       const result = latexSyntax.parse(latex);
-      console.log('\n\n🔨updateContent');
-      // console.log('\tlatex:', latex);
-      // console.log('\tresult:', result);
       const missingElements = findMissingElements(result);
-      // console.log('\tmissingElements:', missingElements);
       let newLatex = replaceMissingElements(latex, missingElements);
-      console.log('\tcursor position[363]:', mf.position);
-
-
-      // mf.executeCommand('deleteBackward');
-      newmf.addEventListener('input', (ev) => {
-        if (ev.inputType === 'deleteContentBackward' && newLatex.endsWith('\\right)')) {
-          console.log("\n⚡[370]delete and endswith \\right)");
-
-          console.log("\tnewLatex [371]:", newLatex);
-          console.log("\tmfposition before:", mf.position);
-          mf.position = mf.position - 1;
-          newLatex = newLatex.replace(/\\right\.$/, "");
-
-          console.log("\tmfposition after:", mf.position);
-        }
-
-      })
-
-
-
-      console.log("\t after replace[383]");
-      console.log("\t newest latest[384]", newLatex);
-
-
-      //pseudocode
-      //if //right is seen, move cursor to left 1 space
-
-
+      const originalPosition = mf.position;
       mf.value = newLatex;
+      mf.position = originalPosition;
       try {
       } catch (e) {
         console.error(
@@ -411,9 +369,6 @@
       } catch (e) { }
     }
 
-
-
-
     function updateLatex(latex, id) {
       const el = document.getElementById(id);
       if (!el) return;
@@ -429,7 +384,6 @@
     }
 
     function updateExpr(expr, id) {
-      console.log("🔨updateExpr")
       const el = document.getElementById(id);
       if (!el) return;
 
@@ -446,9 +400,6 @@
       }
       const latexEl = el.querySelector('.latex'); //writes into replacement box
       if (latexEl && expr) {
-        // const newLatex = expr.latex.replace(/\\/g, '\\\\');
-        // latexEl.value = newLatex;
-        // console.log("writing back into latexEL <--", expr.latex);
         latexEl.value = expr.latex;
       }
 
@@ -514,8 +465,6 @@
     }
 
     function isMissingError(mathJSON) {
-      // console.log("🔨isMissingError");
-      // console.log('\tmathJSON:', mathJSON);
       if (Array.isArray(mathJSON) &&
         mathJSON.length > 1 &&
         mathJSON[0] === 'Error' &&
@@ -535,8 +484,6 @@
     }
 
     function findMissingElements(mathJSON) {
-      // console.log("🔨findMissingElements");
-      // console.log('\tmathJSON:', mathJSON);
       if (isMissingError(mathJSON)) {
         return [mathJSON];
       }
@@ -555,9 +502,6 @@
     }
 
     function replaceMissingElements(latex, missingElements) {
-      // console.log("🔨replaceMissingElements:");
-      // console.log("\tlatex:", latex);
-      // console.log("\tmissingElements:", missingElements);
       const missingIndexes = [];
       for (const item of missingElements) {
         if (item?.sourceOffsets?.length == 2 &&
@@ -574,7 +518,6 @@
       let prevIndex = 0;
       for (const missingIndex of missingIndexes) {
         parts.push(latex.slice(prevIndex, missingIndex))
-        // parts.push('\\error{\\placeholder{}}');
         parts.push('\\placeholder{}');
         prevIndex = missingIndex;
       }
