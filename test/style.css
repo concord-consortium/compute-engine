@@ -141,6 +141,11 @@ math-field, .mathfield {
   color: var(--on-editable);
 }
 
+#newmf{
+  /* background-color: orange; */
+  width: 600px;
+}
+
 .fa-w-24 {
   width: 24px;
   vertical-align: -5px;

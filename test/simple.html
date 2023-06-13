@@ -201,96 +201,30 @@
     <h1>Compute Engine REPL</h1>
   </header>
   <main>
+    -------------------------- Raw Input -------------------------------
+
     <div class="row">
       <div id="input-label">
-        <h2><code>expr =</code></h2>
+        <h2><code>raw input (mf)</code></h2>
       </div>
       <math-field id="mf" class="mathfield" tabindex="0">
-        <!-- {\sqrt{\sum_{n=1}^\infty {\frac{10}{n^4}}}} = {\int_0^\infty \frac{2xdx}{e^x-1}} = \frac{\pi^2}{3} \in {\mathbb R} -->
 
-        <!-- \int_{10}^{100}\sin x \, d x + \int\sin x \quad \mathrm{d} x +
-          \sum_{n=1}^5 n^2+1 -->
-        <!-- 1 + 2  -->
-        <!-- 2+3.001 -->
-        <!-- -1^2 -->
-        <!-- 1^{2^3} -->
-        <!-- 1 + 2 + 3.001 -->
-        <!-- \frac{5+3i}{2} -->
-        <!-- \frac{6}{2}+\frac{3i}{2} -->
-        <!-- \frac{3+2i}{2} -->
-        <!-- 2(-i)+i  -->
-        <!-- \frac{6}{2}+\frac{3\imaginaryI}{2} -->
-
-        <!-- \frac{6 + 3\imaginaryI}{2} -->
-        <!-- 0x^2 + 4x  + 2x + 2(x-1) + b(x - 1) -->
-        <!-- -\frac{50}{70}+\operatorname{GoldenRatio} -->
-        <!-- 3 (2x + 1) + \frac{x}{2} + \frac{3x}{2} + 4\frac{x}{2} -->
-        <!-- \sqrt{1}[3] -->
-        <!-- \sin(x -->
-        <!-- x=\frac{-b\pm\sqrt{b^2-4ac}} {2a} -->
-        <!-- 2^3^4 -->
-        <!-- \sqrt{1}[3] -->
-        <!-- = should produce error or Missing = Missing -->
-        <!-- x=\frac{-b\pm \sqrt{b^2-4ac}}{2a} -->
-        <!-- (b^3c^2d)(x^7y)(a^5f)(b^2x^5b3) -->
-        <!-- {}_3^2 -->
       </math-field>
     </div>
-    <!-- 2{xy}     1+|a+|2|+b| -->
-    <!-- ,c,b -->
-    <!-- a,c, -->
-    <!-- a,, c -->
-    <!-- x{}_{p+1}^{q+1}x_{r+1}^{s+1} -->
-    <!-- 12+ should generate ["Add", 12]-->
-    <!-- \lbrack\rbrack -->
-    <!-- \foo  -->
-    <!-- a\le b \overline{z} \overrightarrow{ABC} -->
-    <!-- \partial^2_{x,y} f(x,y) -->
-    <!-- -0+0(\frac{0}{\frac{0}{0}}-0)+x^\pi -->
-    <!-- -0+0(\frac{0}{\frac{0}{0}}-0) -->
-    <!-- x_0 + x_{0} +  x_n + x_{n+1}-->
-    <!-- -2x5z\sqrt{y}\frac{3}{4}3\pi y} -->
-    <!-- \sin^{-1}\prime(x)      \sin^{-1}'(x) -->
-    <!-- "\begin{align*}\dot{x} & =\sigma(y-x) \\ \dot{y} & =\rho x-y-xz \\ \dot{z} & =-\beta z+xy\end{align*}" -->
-    <!-- 2{xy} should create group -->
-
-    <!-- -(x) -->
-    <!-- -5-3-2 -->
-    <!-- -123, +456.789, -->
-    <!-- x_{0} -->
-    <!-- -123, 456.789, -->
-    <!-- |(a+|b|+1)| -->
-    <!-- i, 2i, -i -->
-    <!-- (a,,b) -->
-    <!-- x_5 -->
-    <!-- (\mathtt{dead\;beef})_{16} -->
-    <!-- (x,,2) -->
-    <!-- $$(deadbeef)_{16}$$ -->
-
-    <!-- \huge x \text{y} -->
-    <!-- \scriptscriptstyle x \text{y} -->
-    <!-- \sqrt[\Huge 3]{29} -->
-    <!-- x^{\binom{n}{k}} -->
-    <!-- \binom12 \textstyle \binom34 \scriptstyle \binom56 \displaystyle \binom78 \scriptstyle \binom90 -->
-    <!-- \int^b_a x^2 dx -->
-    <!-- \int^b_a\int^c_d x^2 dx dy -->
-    <!-- \int x^2 + x = 0 -->
-    <!-- \int x^2 + x dx = 0 -->
-    <!-- \int (x^2 + x) dx = 0 -->
 
     <div class='output-section is-visible'>
+      <br />
+      <h2><code>Latex (latex.el)</code></h2>
+
       <div class="row">
         <div class="output" id="latex"></div>
       </div>
     </div>
-
-    <div id="assumptions-section">
-      <h2>Assumptions</h2>
-      <div id="assumptions"></div>
-    </div>
-
+    ---------------------- Replaced Expression (Read Only)-------------------------
+    <br />
+    <br />
     <div class="output-section" id="json-form">
-      <h2><code>expr.json</code></h2>
+      <h2><code>placeholderExpr (json-form)</code></h2>
       <div class="row">
         <math-field read-only class="latex"></math-field>
         <button class="toggle">
@@ -302,21 +236,31 @@
       <div class="output mathjson"></div>
     </div>
 
-    <div class="output-section" id="canonical-form">
-      <h2><code>expr.canonical</code></h2>
-      <div class="row">
-        <math-field read-only class="latex"></math-field>
-        <button class="toggle">
-          <svg>
-            <use xlink:href="#info-circle" />
-          </svg>
-        </button>
-      </div>
-      <div class="output mathjson"></div>
+
+    <h2><code>latex-edited</code></h2>
+
+    <div class="row">
+      <div class="output" id="latex-edited"></div>
     </div>
 
+
+    ------------------------------Reassigned Input -----------------------------------
+    <br><br>
+    <h2><code>Raw input that gets reassigned back to input field</code></h2>
+    <div class="row">
+      <div id="input-label">
+      </div>
+      <math-field id="newmf" class="mathfield" tabindex="0">
+      </math-field>
+    </div>
+    <h2><code>Latex Reassigned </code></h2>
+    <div class="row">
+      <div class="output" id="latex-reassigned"></div>
+    </div>
   </main>
 
+
+  <!-- -------------------------------------- SCRIPT  -------------------------------------------- -->
   <script defer type="module">
     import { convertLatexToMarkup } from 'https://unpkg.com/mathlive/dist/mathlive.min.mjs';
     import { ComputeEngine } from '../dist/compute-engine.esm.js';
@@ -329,47 +273,32 @@
     ce.latexOptions = { preserveLatex: true };
     ce.jsonSerializationOptions = { metadata: ['latex'] };
 
+    /* ========================[raw input ] ====================== */
     const mf = document.getElementById('mf');
-
     mf.addEventListener('input', (ev) => updateContent(mf));
     updateContent(mf);
 
     function updateContent(mf) {
       const latex = mf.getValue('latex-expanded');
-
       let expr;
-
       const latexEl = document.getElementById('latex');
       if (latexEl) latexEl.innerHTML = escapeHtml(latex);
-
       if (document.getElementById('asciimath')) {
         document.getElementById('asciimath').innerHTML = escapeHtml(
           mf.getValue('ascii-math')
         );
       }
       errors = [];
-
-      // expr = ce.parse(latex);
       const latexSyntax = ce.latexSyntax;
       const result = latexSyntax.parse(latex);
-      console.log('🔨updateContent');
-      console.log('\tlatex:', latex);
-      console.log('\tresult:', result);
-
       const missingElements = findMissingElements(result);
       const newLatex = replaceMissingElements(latex, missingElements);
-      console.log('newLatex', newLatex);
-
-      updateExpr(null, 'json-form');
-      updateExpr(null, 'canonical-form');
 
       try {
-        // const nonCanonical = ce.parse(latex, { canonical: false });
-        // updateExpr(nonCanonical, 'json-form');
-        // console.log('updateContent expr', nonCanonical);
         const placeholderExpr = ce.parse(newLatex, { canonical: false });
         updateExpr(placeholderExpr, 'json-form');
-        console.log('updateContent expr', placeholderExpr);
+        const latexElEdited = document.getElementById('latex-edited');
+        latexElEdited.innerHTML = newLatex;
       } catch (e) {
         console.error(
           'format(%c ' + latex + "%c, ['json']) " + e.toString(),
@@ -377,7 +306,55 @@
           'background: transparent'
         );
       }
+      try {
+        const canonicalExpr = expr.canonical;
+        try {
+          // updateExpr(canonicalExpr, 'canonical-form');
+        } catch (e) {
+          console.error(
+            'canonical(%c ' + latex + '%c) ' + e.toString(),
+            'color: red;  background: hsla(0, 60%, 90%)',
+            'background: transparent'
+          );
+        }
+      } catch (e) { }
+    }
 
+    /* ========================[ update input ] ====================== */
+
+    //this is the one that's updated
+    const newmf = document.getElementById('newmf');
+    newmf.addEventListener('input', (ev) => {
+      return updateContentWrite(newmf)
+    });
+    updateContentWrite(newmf);
+
+    function updateContentWrite(mf) {
+      const latex = mf.getValue('latex');
+      let expr;
+      const latexElReassigned = document.getElementById('latex-reassigned');
+      if (latexElReassigned) latexElReassigned.innerHTML = escapeHtml(latex); //assigns to latex reassigned bubble
+      if (document.getElementById('asciimath')) {
+        document.getElementById('asciimath').innerHTML = escapeHtml(
+          mf.getValue('ascii-math')
+        );
+      }
+      errors = [];
+      const latexSyntax = ce.latexSyntax;
+      const result = latexSyntax.parse(latex);
+      const missingElements = findMissingElements(result);
+      let newLatex = replaceMissingElements(latex, missingElements);
+      const originalPosition = mf.position;
+      mf.value = newLatex;
+      mf.position = originalPosition;
+      try {
+      } catch (e) {
+        console.error(
+          'format(%c ' + latex + "%c, ['json']) " + e.toString(),
+          'color: red;  background: hsla(0, 60%, 90%)',
+          'background: transparent'
+        );
+      }
       try {
         const canonicalExpr = expr.canonical;
         try {
@@ -421,7 +398,7 @@
           errors.join('<br>') +
           '</div>';
       }
-      const latexEl = el.querySelector('.latex');
+      const latexEl = el.querySelector('.latex'); //writes into replacement box
       if (latexEl && expr) {
         latexEl.value = expr.latex;
       }
@@ -488,8 +465,6 @@
     }
 
     function isMissingError(mathJSON) {
-      console.log("🔨isMissingError");
-      console.log('\tmathJSON:', mathJSON);
       if (Array.isArray(mathJSON) &&
         mathJSON.length > 1 &&
         mathJSON[0] === 'Error' &&
@@ -509,8 +484,6 @@
     }
 
     function findMissingElements(mathJSON) {
-      console.log("🔨findMissingElements");
-      console.log('\tmathJSON:', mathJSON);
       if (isMissingError(mathJSON)) {
         return [mathJSON];
       }
@@ -529,9 +502,6 @@
     }
 
     function replaceMissingElements(latex, missingElements) {
-      console.log("🔨replaceMissingElements:");
-      console.log("latex:", latex);
-      console.log("missingElements:", missingElements);
       const missingIndexes = [];
       for (const item of missingElements) {
         if (item?.sourceOffsets?.length == 2 &&
@@ -548,7 +518,7 @@
       let prevIndex = 0;
       for (const missingIndex of missingIndexes) {
         parts.push(latex.slice(prevIndex, missingIndex))
-        parts.push('\\error{\\placeholder{}}');
+        parts.push('\\placeholder{}');
         prevIndex = missingIndex;
       }
       // Add the last part
