@@ -1399,6 +1399,27 @@ export class _Parser implements Parser {
     return null;
   }
 
+  missingIfEmptyRequiredLatexArgument(): Expression {
+    const expr = this.matchRequiredLatexArgument();
+    return this.missingIfEmpty(expr);
+  }
+
+  missingIfEmpty(expr: Expression | null): Expression {
+    if (expr === null) {
+      // No Expression and the parser.index should be at the right spot for it
+      // The latex will be empty in this case
+      return this.missing(this.index);
+    } else if (isEmptySequence(expr)) {
+      // Empty sequence so parser.index will be one more than where the missing
+      // element should be.
+      // The latex will be `}` which isn't very useful but it does identify this is
+      // inside of a group.
+      return this.missing(this.index - 1);
+    } else {
+      return expr;
+    }
+  }
+
   matchSupsub(lhs: Expression | null): Expression | null {
     console.assert(lhs !== null); // @todo validate
     if (lhs === null) return null;
@@ -1421,7 +1442,7 @@ export class _Parser implements Parser {
         else {
           const sub =
             this.matchRequiredLatexArgument() ?? this.matchStringArgument();
-          if (sub === null) return this.error('missing', index);
+          if (sub === null) return this.missing(index);
 
           subscripts.push(sub);
         }
@@ -1431,7 +1452,7 @@ export class _Parser implements Parser {
           superscripts.push(this.error('syntax-error', subIndex));
         else {
           const sup = this.matchRequiredLatexArgument();
-          if (sup === null) return this.error('missing', index);
+          if (sup === null) return this.missing(index);
           superscripts.push(sup);
         }
       }
@@ -1795,10 +1816,10 @@ export class _Parser implements Parser {
         const [def, n] = opDefs[0] as [PostfixEntry, number];
         this.index += n;
         if (typeof def.parse === 'function') {
-          const result = def.parse(this, this.error('missing', start));
+          const result = def.parse(this, this.missing(start));
           if (result) return result;
         }
-        if (def.name) return [def.name, this.error('missing', start)];
+        if (def.name) return [def.name, this.missing(start)];
         return this.error('unexpected-operator', start);
       }
 
@@ -1812,10 +1833,7 @@ export class _Parser implements Parser {
           if (result) return result;
         }
         if (def.name)
-          return [
-            def.name,
-            this.matchExpression() ?? this.error('missing', start),
-          ];
+          return [def.name, this.matchExpression() ?? this.missing(start)];
         return this.error('unexpected-operator', start);
       }
 
@@ -1824,18 +1842,14 @@ export class _Parser implements Parser {
         const [def, n] = opDefs[0] as [InfixEntry, number];
         this.index += n;
         if (typeof def.parse === 'function') {
-          const result = def.parse(
-            this,
-            { minPrec: 0 },
-            this.error('missing', start)
-          );
+          const result = def.parse(this, { minPrec: 0 }, this.missing(start));
           if (result) return result;
         }
         if (def.name)
           return [
             def.name,
-            this.error('missing', start),
-            this.matchExpression() ?? this.error('missing', start),
+            this.missing(start),
+            this.matchExpression() ?? this.missing(start),
           ];
         return this.error('unexpected-operator', start);
       }
@@ -2074,21 +2088,61 @@ export class _Parser implements Parser {
   /**
    * Add LaTeX or other requested metadata to the expression
    */
+  decorate(expr: Expression, start: number): Expression;
+  decorate(expr: Expression | null, start: number): Expression | null;
   decorate(expr: Expression | null, start: number): Expression | null {
     if (expr === null) return null;
     if (!this.options.preserveLatex) return expr;
 
     const latex = this.latex(start, this.index);
+    // start and this.index are indexes in the tokens array
+    // for sourceOffsets we want indexes in the source latex
+    const latexBeforeLength = this.latex(0, start).length;
+    const sourceOffsets: [number, number] = [
+      latexBeforeLength,
+      latexBeforeLength + latex.length,
+    ];
     if (Array.isArray(expr)) {
-      expr = { latex, fn: expr };
+      expr = { latex, sourceOffsets, fn: expr };
     } else if (typeof expr === 'number') {
-      expr = { latex, num: Number(expr).toString() };
+      expr = { latex, sourceOffsets, num: Number(expr).toString() };
     } else if (typeof expr === 'string') {
-      expr = { latex, sym: expr };
+      expr = { latex, sourceOffsets, sym: expr };
     } else if (typeof expr === 'object' && expr !== null) {
       expr.latex = latex;
+      expr.sourceOffsets = sourceOffsets;
     }
     return expr;
+  }
+
+  missing(fromToken: number): Expression {
+    const maybeDecorated = this.decorate(
+      [
+        'Error',
+        { str: 'missing' },
+        [
+          'Latex',
+          {
+            str: this.latex(fromToken, this.index),
+          },
+        ],
+      ],
+      fromToken
+    );
+    // TODO: it might be better to manually construct the decorated expression
+    // if this.options.preserveLatex
+    if (
+      !Array.isArray(maybeDecorated) &&
+      typeof maybeDecorated === 'object' &&
+      maybeDecorated !== null &&
+      maybeDecorated.sourceOffsets
+    ) {
+      // TODO: this might be wrong in some cases we need to check various
+      // cases. Currently the missing error shows the latex of the operator
+      // that "caused" the error.
+      maybeDecorated.sourceOffsets[1] = maybeDecorated.sourceOffsets[0];
+    }
+    return maybeDecorated;
   }
 
   error(
